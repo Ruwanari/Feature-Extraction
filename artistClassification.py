@@ -37,18 +37,30 @@ y = encoder.fit_transform(genre_list)
 # normalizing
 scaler = StandardScaler()
 X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))
-
+amaradewa = X[:4]
+chandraleka = X[4:8]
+clarence = X[8:12]
+deepika = X[12:16]
+jothipala = X[16:20]
+kapuge = X[20:24]
+kasun = X[24:28]
+malani = X[28:32]
+mihindu = X[32:36]
+rani = X[36:40]
+artists = [amaradewa, chandraleka, clarence, deepika, jothipala, kapuge, kasun, malani, mihindu, rani]
 # spliting of dataset into train and test dataset
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-amaradewa = X[:4]
 dest = "dest\\"
-print (amaradewa)
-gmm = GaussianMixture(n_components = 4, max_iter = 200, covariance_type='diag',n_init = 3)
-gmm.fit(amaradewa)
-picklefile = "amaradewa.gmm"
-pickle.dump(gmm,open(dest + picklefile,'wb'))
-print (' modeling completed for speaker: amaradewa')
+t = 0
+for artist in artists:
+    gmm = GaussianMixture(n_components = 4, max_iter = 200, covariance_type='diag',n_init = 3)
+    gmm.fit(artist)
+    picklefile = str(t)+".gmm"
+    pickle.dump(gmm,open(dest + picklefile,'wb'))
+    print (' modeling completed for speaker:'+str(t))
+    t = t+1
 
 '''
 # creating a model
