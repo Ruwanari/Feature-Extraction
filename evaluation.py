@@ -20,7 +20,7 @@ from sklearn.mixture import GaussianMixture
 import time
 
 
-data = pd.read_csv('data.csv')
+data = pd.read_csv('data_test.csv')
 data.head()
 # Dropping unneccesary columns
 data = data.drop(['filename'],axis=1)
