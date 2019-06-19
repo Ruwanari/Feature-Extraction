@@ -32,7 +32,7 @@ file = open('data.csv', 'w', newline='')
 with file:
     writer = csv.writer(file)
     writer.writerow(header)
-artists = 'amaradewa chandralekha clarence deepika jothipala kapuge kasun malani mihindu rani'.split()
+artists = 'amaradewa chandralekha clarence deepika jothipala kapuge kasun malani mihindu nanda'.split()
 for g in artists:
     for filename in os.listdir(f'./dataset/{g}'):
         songname = f'./dataset/{g}/{filename}'
