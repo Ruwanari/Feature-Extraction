@@ -9,6 +9,8 @@ import librosa
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import butter, lfilter
+
 
 import os
 import csv
@@ -28,15 +30,21 @@ for i in range(1, 21):
     header += f' mfcc{i}'
 header += ' label'
 header = header.split()
-file = open('data.csv', 'w', newline='')
+file = open('data_bprep.csv', 'w', newline='')
 with file:
     writer = csv.writer(file)
     writer.writerow(header)
-artists = 'amaradewa chandralekha clarence deepika jothipala kapuge kasun malani mihindu nanda'.split()
+artists = 'amal amaradewa amarasiri anjaline chandralekha clarence dayan deepika diwulgane greshan indrani jagath jothipala kapuge kasun latha malani mervin milton nanda neela nelu nirosha ranil rookantha samitha shashika sujatha tm umaria'.split()
 for g in artists:
     for filename in os.listdir(f'./dataset/{g}'):
         songname = f'./dataset/{g}/{filename}'
-        y, sr = librosa.load(songname)
+        lo,hi=85,2400
+        y1,sr = librosa.load(songname)
+        b,a=butter(N=6, Wn=[2*lo/sr, 2*hi/sr], btype='band')
+        x = lfilter(b,a,y1)
+        librosa.output.write_wav('bandpass-repet.wav', x, sr)
+        bp_rep = 'bandpass-repet.wav'
+        y, sr = librosa.load(bp_rep)
         S_full, phase = librosa.magphase(librosa.stft(y))
         idx = slice(*librosa.time_to_frames([30, 35], sr=sr))
         S_filter = librosa.decompose.nn_filter(S_full,
@@ -60,6 +68,7 @@ for g in artists:
         y_foreground = librosa.istft(D_foreground)
         librosa.output.write_wav('newfile', y_foreground, sr)
         newfile = 'newfile'
+        
         z,sr = librosa.load(newfile, mono=True, duration=240)
         chroma_stft = librosa.feature.chroma_stft(y=z, sr=sr)
         rmse = librosa.feature.rmse(y=z)
@@ -72,11 +81,11 @@ for g in artists:
         for e in mfcc:
             to_append += f' {np.mean(e)}'
         to_append += f' {g}'
-        file = open('data.csv', 'a', newline='')
+        file = open('data_harrep.csv', 'a', newline='')
         with file:
             writer = csv.writer(file)
             writer.writerow(to_append.split())
-data = pd.read_csv('data.csv')
+data = pd.read_csv('data_harrep.csv')
 data.head()
 # Dropping unneccesary columns
 data = data.drop(['filename'],axis=1)
